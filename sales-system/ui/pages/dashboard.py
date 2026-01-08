@@ -2,6 +2,12 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
+import streamlit as st
+
+if "token" not in st.session_state:
+    st.warning("Duhet të kyçeni për të vazhduar 🔒")
+    st.switch_page("pages/login.py")
+    st.stop()
 
 # -------------------------
 # CONFIG
