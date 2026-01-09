@@ -11,10 +11,10 @@ password = st.text_input("Password", type="password")
 if st.button("Login"):
     try:
         res = requests.post(
-            "http://127.0.0.1:8001/login",
-            json={"username": username, "password": password},
-            timeout=5
-        )
+    "http://auth-service:8001/login",
+    json={"username": username, "password": password},
+    timeout=5
+)
 
         if res.status_code == 200:
             st.session_state.token = res.json()["access_token"]

@@ -35,7 +35,7 @@ st.caption("UI stil Power BI / Grafana — vetëm me të dhëna ekzistuese (pa b
 # ===============================
 # PATH
 # ===============================
-DATA_PATH = Path(__file__).resolve().parents[2] / "backend" / "data" / "sales_long.csv"
+DATA_PATH = Path("/app/data/sales_long.csv")
 
 @st.cache_data
 def load_data():

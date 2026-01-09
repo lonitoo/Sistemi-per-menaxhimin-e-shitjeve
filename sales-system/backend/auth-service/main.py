@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import jwt
+from jose import jwt
 from datetime import datetime, timedelta
 
 # ======================

@@ -14,7 +14,7 @@ if "token" not in st.session_state:
 # -------------------------
 st.set_page_config(page_title="Sales Dashboard", layout="wide")
 
-DATA_PATH = Path(__file__).resolve().parents[2] / "backend" / "data" / "sales_long.csv"
+DATA_PATH = Path("/app/data/sales_long.csv")
 
 # -------------------------
 # LOAD DATA
