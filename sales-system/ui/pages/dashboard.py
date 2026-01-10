@@ -9,6 +9,34 @@ if "token" not in st.session_state:
     st.switch_page("pages/login.py")
     st.stop()
 
+with st.sidebar:
+    st.markdown(
+        """
+        <style>
+        .sidebar-logout {
+            position: fixed;
+            bottom: 20px;
+            width: 90%;
+        }
+        .sidebar-logout button {
+            background-color: #d9534f;
+            color: white;
+            width: 100%;
+            border-radius: 6px;
+            height: 40px;
+            font-weight: bold;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown('<div class="sidebar-logout">', unsafe_allow_html=True)
+    if st.button("🚪 Logout"):
+        st.session_state.clear()
+        st.switch_page("streamlit_test.py")
+    st.markdown('</div>', unsafe_allow_html=True)
+
 # -------------------------
 # CONFIG
 # -------------------------
@@ -155,3 +183,31 @@ st.pyplot(fig3)
 # -------------------------
 st.subheader("🗄 Raw data (preview)")
 st.dataframe(filtered.head(100))
+
+with st.sidebar:
+    st.markdown(
+        """
+        <style>
+        .sidebar-logout {
+            position: fixed;
+            bottom: 20px;
+            width: 90%;
+        }
+        .sidebar-logout button {
+            background-color: #d9534f;
+            color: white;
+            width: 100%;
+            border-radius: 6px;
+            height: 40px;
+            font-weight: bold;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown('<div class="sidebar-logout">', unsafe_allow_html=True)
+    if st.button("🚪 Logout"):
+        st.session_state.clear()
+        st.switch_page("home.py")
+    st.markdown('</div>', unsafe_allow_html=True)

@@ -17,4 +17,4 @@ COPY sales-system/ui .
 EXPOSE 8501
 
 # Run Streamlit
-CMD ["streamlit", "run", "streamlit_test.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "Home.py", "--server.port=8501", "--server.address=0.0.0.0"]
