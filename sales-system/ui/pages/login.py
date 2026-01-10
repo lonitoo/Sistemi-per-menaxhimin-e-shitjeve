@@ -19,7 +19,7 @@ if st.button("Login"):
         if res.status_code == 200:
             st.session_state.token = res.json()["access_token"]
             st.success("Login successful ✅")
-            st.switch_page("pages/dashboard.py")
+            st.switch_page("Home.py")
         else:
             st.error("Username ose password gabim ❌")
 
