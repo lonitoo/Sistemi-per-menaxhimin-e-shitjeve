@@ -5,9 +5,8 @@ if "token" not in st.session_state:
     st.warning("Duhet të kyçeni për të vazhduar 🔒")
     st.switch_page("pages/login.py")
     st.stop()
-# ======================
-# LOGIN CHECK
-# ======================
+
+
 if "token" not in st.session_state:
     st.title("🔐 Sales Analytics System")
     st.info("Ju lutem bëni login për të vazhduar.")
@@ -42,9 +41,7 @@ with st.sidebar:
     st.markdown('</div>', unsafe_allow_html=True)
 
 
-# ======================
-# HOME PAGE
-# ======================
+
 st.title("🏠 Home")
 
 st.markdown("""
@@ -56,14 +53,11 @@ Ky aplikacion shërben për:
 - 🔮 Parashikim (Forecast) bazuar në të dhëna historike
 - 📄 Mbështetje për vendimmarrje
 
-Të dhënat merren nga **databaza ekzistuese (CSV)**.
 """)
-
+            
 st.divider()
 
-# ======================
-# QUICK NAVIGATION
-# ======================
+
 st.subheader("📌 Navigim i shpejtë")
 
 col1, col2, col3 = st.columns(3)
@@ -83,4 +77,4 @@ with col3:
 st.divider()
 
 st.success("✅ Sistemi gati për analizë")
-st.caption("Sales Analytics System – Academic Project")
+st.caption("Sales Analytics System – Elab-analyse")

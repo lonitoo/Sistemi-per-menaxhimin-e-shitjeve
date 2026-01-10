@@ -3,32 +3,32 @@ from pydantic import BaseModel
 from jose import jwt
 from datetime import datetime, timedelta
 
-# ======================
-# CONFIG
-# ======================
+
+# Config
+
 SECRET_KEY = "super-secret-key"
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 60
 
 app = FastAPI(title="Auth Service")
 
-# ======================
-# MODELS
-# ======================
+
+#models
+
 class LoginRequest(BaseModel):
     username: str
     password: str
 
-# ======================
-# ROOT (test endpoint)
-# ======================
+
+# endpoint
+
 @app.get("/")
 def root():
     return {"status": "auth-service running"}
 
-# ======================
+
 # LOGIN
-# ======================
+
 @app.post("/login")
 def login(data: LoginRequest):
     # DEMO user (mjafton për projekt)

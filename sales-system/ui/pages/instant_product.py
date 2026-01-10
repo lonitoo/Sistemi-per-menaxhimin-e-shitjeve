@@ -42,14 +42,14 @@ with st.sidebar:
 st.set_page_config(page_title="Sales Management", layout="wide")
 st.title("📦 Sales & Inventory Management")
 
-# INIT STORAGE
+
 if "products" not in st.session_state:
     st.session_state.products = []
 
 if "sales" not in st.session_state:
     st.session_state.sales = []
 
-# ---------------- PRODUCTS ----------------
+
 st.subheader("➕ Add Product")
 
 with st.form("product_form"):
@@ -69,12 +69,12 @@ with st.form("product_form"):
         else:
             st.error("Product name required")
 
-# ---------------- PRODUCTS TABLE ----------------
+
 st.subheader("📋 Products")
 products_df = pd.DataFrame(st.session_state.products)
 st.dataframe(products_df, use_container_width=True)
 
-# ---------------- SALES ----------------
+
 st.subheader("🧾 Register Sale")
 
 if st.session_state.products:
@@ -105,7 +105,6 @@ if st.session_state.products:
 else:
     st.info("Add products first")
 
-# ---------------- SALES TABLE ----------------
 st.subheader("📊 Sales Records")
 sales_df = pd.DataFrame(st.session_state.sales)
 st.dataframe(sales_df, use_container_width=True)

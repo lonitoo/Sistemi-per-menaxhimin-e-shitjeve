@@ -11,7 +11,8 @@ CSV_PATH = DATA_DIR / "sales_long.csv"
 
 DATA_DIR.mkdir(exist_ok=True)
 
-# Nëse file mungon, krijoje
+
+
 if not CSV_PATH.exists():
     pd.DataFrame(
         columns=["date", "Year", "Month", "Hour", "weekday", "product_code", "quantity"]

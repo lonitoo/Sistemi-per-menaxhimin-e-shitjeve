@@ -39,9 +39,7 @@ with st.sidebar:
         st.switch_page("Home.py")
     st.markdown('</div>', unsafe_allow_html=True)    
 
-# ===============================
-# PAGE CONFIG
-# ===============================
+
 st.set_page_config(page_title="Sales Analytics (PowerBI Style)", layout="wide")
 
 # Simple "PowerBI-like" header styling
@@ -58,11 +56,10 @@ st.markdown(
 )
 
 st.title("📊 Sales Analytics Dashboard")
-st.caption("UI stil Power BI / Grafana — vetëm me të dhëna ekzistuese (pa backend, pa shkrim në CSV).")
 
-# ===============================
-# PATH
-# ===============================
+
+
+
 DATA_PATH = Path("/app/data/sales_long.csv")
 
 @st.cache_data
@@ -93,9 +90,7 @@ except Exception as e:
     st.error(f"Gabim gjatë leximit të të dhënave: {e}")
     st.stop()
 
-# ===============================
-# SIDEBAR FILTERS
-# ===============================
+
 st.sidebar.header("🔎 Filtra")
 
 products = sorted(raw["product_code"].dropna().unique().tolist())
@@ -127,12 +122,8 @@ ma_window = st.sidebar.slider("Moving average window", 3, 60, 7)
 
 show_table = st.sidebar.checkbox("Show raw preview", value=True)
 
-st.sidebar.markdown("---")
-st.sidebar.caption("Tip: nëse dataset ka data të përziera, ky version i normalizon automatikisht.")
 
-# ===============================
-# FILTER DATA
-# ===============================
+
 df = raw[raw["product_code"] == selected_product].copy()
 df = df[(df["date"].dt.date >= start_date) & (df["date"].dt.date <= end_date)].copy()
 df = df.sort_values("date")
@@ -141,9 +132,7 @@ if df.empty:
     st.warning("Nuk ka të dhëna për këtë filtër. Ndrysho produktin ose datat.")
     st.stop()
 
-# ===============================
-# AGGREGATION
-# ===============================
+
 def aggregate(df_in: pd.DataFrame, mode: str) -> pd.DataFrame:
     d = df_in.copy()
     if mode == "Daily":
@@ -159,14 +148,12 @@ def aggregate(df_in: pd.DataFrame, mode: str) -> pd.DataFrame:
 
 series = aggregate(df, group_by)
 
-# ===============================
-# KPI CARDS (PowerBI-like)
-# ===============================
+
 total_qty = float(series["quantity"].sum())
 avg_qty = float(series["quantity"].mean())
 max_qty = float(series["quantity"].max())
 
-# simple trend: last vs previous
+
 trend_delta = None
 if len(series) >= 2:
     last = series["quantity"].iloc[-1]
@@ -179,22 +166,18 @@ k2.metric("Average / period", f"{avg_qty:,.2f}")
 k3.metric("Max / period", f"{max_qty:,.2f}")
 k4.metric("Trend (last vs prev)", f"{series['quantity'].iloc[-1]:,.2f}", delta=None if trend_delta is None else f"{trend_delta:,.2f}")
 
-st.markdown("<div class='small-note'>Këto KPI reflektojnë të dhënat pas filtrave dhe agregimit.</div>", unsafe_allow_html=True)
+
 
 st.divider()
 
-# ===============================
-# TABS (Grafana/PowerBI layout)
-# ===============================
+
 tab_overview, tab_forecast, tab_diag, tab_export = st.tabs(["📌 Overview", "🔮 Forecast", "🧪 Diagnostics", "⬇️ Export"])
 
-# -------------------------------
-# OVERVIEW TAB
-# -------------------------------
+
 with tab_overview:
     c1, c2 = st.columns([2, 1])
 
-    # Plot 1: Time series
+    
     fig1, ax1 = plt.subplots(figsize=(12, 4))
     ax1.plot(series["date"], series["quantity"], label=f"{group_by} quantity", alpha=0.9)
     ax1.set_title(f"{selected_product} — Quantity over time ({group_by})")
@@ -203,7 +186,7 @@ with tab_overview:
     ax1.legend()
     c1.pyplot(fig1, use_container_width=True)
 
-    # Plot 2: Distribution (hist)
+    
     fig2, ax2 = plt.subplots(figsize=(6, 4))
     ax2.hist(series["quantity"].values, bins=25)
     ax2.set_title("Distribution of quantity")
@@ -211,7 +194,7 @@ with tab_overview:
     ax2.set_ylabel("Frequency")
     c2.pyplot(fig2, use_container_width=True)
 
-    # Moving average
+   
     st.subheader("📉 Moving Average")
     series_ma = series.copy()
     series_ma["ma"] = series_ma["quantity"].rolling(window=ma_window).mean()
@@ -227,13 +210,11 @@ with tab_overview:
         with st.expander("📄 Preview (aggregated data)"):
             st.dataframe(series.tail(50), use_container_width=True)
 
-# -------------------------------
-# FORECAST TAB
-# -------------------------------
+
 with tab_forecast:
     st.subheader("🔮 Linear Regression Forecast (simple & stable)")
 
-    # Prepare regression on t
+   
     work = series.copy()
     work["t"] = np.arange(len(work))
     X = work[["t"]]
@@ -244,7 +225,7 @@ with tab_forecast:
 
     future_t = np.arange(len(work), len(work) + forecast_days)
 
-    # Determine frequency from group_by
+    
     freq = "D" if group_by == "Daily" else ("W" if group_by == "Weekly" else "MS")
     future_dates = pd.date_range(start=work["date"].iloc[-1], periods=forecast_days + 1, freq=freq)[1:]
 
@@ -263,7 +244,7 @@ with tab_forecast:
     axf.legend()
     st.pyplot(figf, use_container_width=True)
 
-    # Forecast table
+   
     forecast_df = pd.DataFrame({
         "date": future_dates,
         "forecast_quantity": forecast,
@@ -274,13 +255,11 @@ with tab_forecast:
     st.markdown("**Forecast preview**")
     st.dataframe(forecast_df.head(30), use_container_width=True)
 
-# -------------------------------
-# DIAGNOSTICS TAB
-# -------------------------------
+
 with tab_diag:
     st.subheader("🧪 Model diagnostics")
 
-    # Refit to show residuals
+   
     work = series.copy()
     work["t"] = np.arange(len(work))
     X = work[["t"]]
@@ -307,7 +286,6 @@ with tab_diag:
     ax_sc.set_ylabel("Residual")
     colB.pyplot(fig_sc, use_container_width=True)
 
-    # Simple metrics
     mae = float(np.mean(np.abs(residuals)))
     rmse = float(np.sqrt(np.mean(residuals**2)))
 
@@ -316,11 +294,8 @@ with tab_diag:
     m2.metric("RMSE", f"{rmse:,.3f}")
     m3.metric("Data points", f"{len(work)}")
 
-    st.info("Ky është model i thjeshtë (Linear Regression). Për projekt, më vonë mund ta zëvendësojmë me Prophet/ARIMA/LSTM kur të jemi gati.")
+   
 
-# -------------------------------
-# EXPORT TAB
-# -------------------------------
 with tab_export:
     st.subheader("⬇️ Export")
 
@@ -339,8 +314,7 @@ with tab_export:
         mime="text/csv"
     )
 
-    # Also export forecast if already created in forecast tab logic
-    # Recreate quickly (stable)
+
     work = series.copy()
     work["t"] = np.arange(len(work))
     X = work[["t"]]

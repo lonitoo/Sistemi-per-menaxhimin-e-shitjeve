@@ -34,19 +34,17 @@ with st.sidebar:
     st.markdown('<div class="sidebar-logout">', unsafe_allow_html=True)
     if st.button("🚪 Logout"):
         st.session_state.clear()
-        st.switch_page("streamlit_test.py")
+        st.switch_page("Home.py")
     st.markdown('</div>', unsafe_allow_html=True)
 
-# -------------------------
-# CONFIG
-# -------------------------
+
+
 st.set_page_config(page_title="Sales Dashboard", layout="wide")
 
 DATA_PATH = Path("/app/data/sales_long.csv")
 
-# -------------------------
-# LOAD DATA
-# -------------------------
+
+#DATA
 @st.cache_data
 def load_data():
     df = pd.read_csv(DATA_PATH)
@@ -63,15 +61,10 @@ def load_data():
 
 df = load_data()
 
-# -------------------------
-# UI
-# -------------------------
-st.title("📊 Sales Dashboard")
-st.success("Të dhënat u ngarkuan me sukses")
 
-# -------------------------
-# SIDEBAR FILTERS
-# -------------------------
+
+
+
 st.sidebar.header("🔎 Filtra")
 
 products = sorted(df["product_code"].unique())
@@ -91,9 +84,8 @@ group_by = st.sidebar.selectbox(
     ["Daily", "Monthly", "Yearly"]
 )
 
-# -------------------------
-# FILTER DATA
-# -------------------------
+#filter data
+
 filtered = df[
     (df["product_code"].isin(selected_products)) &
     (df["date"].dt.date >= date_range[0]) &
@@ -104,9 +96,9 @@ if filtered.empty:
     st.warning("Nuk ka të dhëna për këta filtra")
     st.stop()
 
-# -------------------------
+
 # AGGREGATION
-# -------------------------
+
 if group_by == "Daily":
     agg = filtered.groupby("date", as_index=False)["quantity"].sum()
 elif group_by == "Monthly":
@@ -128,9 +120,8 @@ else:
 
 agg = agg.sort_values("date")
 
-# -------------------------
-# METRICS
-# -------------------------
+
+
 c1, c2, c3 = st.columns(3)
 
 c1.metric("Total Quantity", f"{filtered['quantity'].sum():,.2f}")
@@ -139,9 +130,8 @@ c3.metric("Products", filtered["product_code"].nunique())
 
 st.divider()
 
-# -------------------------
-# GRAPH 1 – TIME SERIES
-# -------------------------
+
+
 st.subheader("📈 Total Quantity over Time")
 
 fig1, ax1 = plt.subplots(figsize=(12, 4))
@@ -150,9 +140,8 @@ ax1.set_xlabel("Date")
 ax1.set_ylabel("Quantity")
 st.pyplot(fig1)
 
-# -------------------------
-# GRAPH 2 – TOP PRODUCTS
-# -------------------------
+
+
 st.subheader("🏆 Top Products")
 
 top_products = (
@@ -167,9 +156,7 @@ top_products.plot(kind="bar", ax=ax2)
 ax2.set_ylabel("Quantity")
 st.pyplot(fig2)
 
-# -------------------------
-# GRAPH 3 – DISTRIBUTION (missing before)
-# -------------------------
+
 st.subheader("📊 Distribution of Quantity")
 
 fig3, ax3 = plt.subplots(figsize=(8, 4))
@@ -178,36 +165,7 @@ ax3.set_xlabel("Quantity")
 ax3.set_ylabel("Frequency")
 st.pyplot(fig3)
 
-# -------------------------
-# RAW DATA
-# -------------------------
+
 st.subheader("🗄 Raw data (preview)")
 st.dataframe(filtered.head(100))
 
-with st.sidebar:
-    st.markdown(
-        """
-        <style>
-        .sidebar-logout {
-            position: fixed;
-            bottom: 20px;
-            width: 90%;
-        }
-        .sidebar-logout button {
-            background-color: #d9534f;
-            color: white;
-            width: 100%;
-            border-radius: 6px;
-            height: 40px;
-            font-weight: bold;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown('<div class="sidebar-logout">', unsafe_allow_html=True)
-    if st.button("🚪 Logout"):
-        st.session_state.clear()
-        st.switch_page("home.py")
-    st.markdown('</div>', unsafe_allow_html=True)
